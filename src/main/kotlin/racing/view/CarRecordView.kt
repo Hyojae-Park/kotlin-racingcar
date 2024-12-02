@@ -4,14 +4,11 @@ import racing.controller.RacingController
 import racing.domain.CarModel
 
 class CarRecordView(private val gameInfo: GameInfo) {
-    private val carList: ArrayList<CarModel> = ArrayList(gameInfo.cars)
-    private var currentRound: Int = 0
-
-    init {
-        for (index in 0 until gameInfo.cars) {
-            carList.add(CarModel(index.toString(), RacingController()))
+    private val carList =
+        List(gameInfo.cars) { index ->
+            CarModel(index.toString(), RacingController())
         }
-    }
+    private var currentRound: Int = 0
 
     fun hasNextRound(): Boolean {
         return (currentRound < gameInfo.rounds)
@@ -35,7 +32,7 @@ class CarRecordView(private val gameInfo: GameInfo) {
     }
 
     private fun printCar(position: Int) {
-        for (i in 0 until position) {
+        repeat(position) {
             print("-")
         }
         println()

@@ -15,8 +15,9 @@ class RacingGameApp {
     // output racing result
     fun startGame() {
         println("실행 결과")
-        for (round in 0 until gameInfo.rounds)
+        repeat(gameInfo.rounds) {
             carRecordView.nextRound()
+        }
     }
 }
 

@@ -25,7 +25,7 @@ class Calculator {
         iterator: ListIterator<String>,
     ): Double {
         if (iterator.hasNext().not()) return lValue
-        val operateString = iterator.next()
+        val strOperator = iterator.next()
 
         val rValue =
             try {
@@ -34,7 +34,7 @@ class Calculator {
                 throw IllegalArgumentException("rValue 가 확인 할 수 없습니다..", e)
             }
 
-        val resultValue = operateCalculator(lValue, rValue, operateString)
+        val resultValue = operateCalculator(lValue, rValue, strOperator)
 
         return if (iterator.hasNext()) {
             calculateRecursive(resultValue, iterator)

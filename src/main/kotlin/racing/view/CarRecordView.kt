@@ -1,12 +1,13 @@
 package racing.view
 
+import racing.controller.GameController
 import racing.controller.RacingController
 import racing.domain.CarModel
 
-class CarRecordView(private val gameInfo: GameInfo) {
+class CarRecordView(private val gameInfo: GameInfo, private val controller: GameController = RacingController()) {
     private val carList =
         List(gameInfo.cars) { index ->
-            CarModel(index.toString(), RacingController())
+            CarModel(name = index.toString(), controller = controller)
         }
     private var currentRound: Int = 0
 

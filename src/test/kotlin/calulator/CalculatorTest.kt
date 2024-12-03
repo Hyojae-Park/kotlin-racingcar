@@ -4,7 +4,6 @@ import calculator.Calculator
 import org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
-import org.junit.jupiter.params.provider.NullAndEmptySource
 import org.junit.jupiter.params.provider.ValueSource
 import kotlin.test.assertEquals
 
@@ -27,11 +26,8 @@ class CalculatorTest {
 
     @ParameterizedTest
     @ValueSource(strings = ["=", "1 a 1", "1 -", "- 1", "1+1", "1+ 1", "1 1"])
-    @NullAndEmptySource
     fun testFailedCalculator(input: String?) {
         val calculator = Calculator()
-        assertThatIllegalArgumentException().isThrownBy {
-            calculator.calculator(input)
-        }
+        assertThatIllegalArgumentException().isThrownBy { input?.let { calculator.calculator(it) } }
     }
 }

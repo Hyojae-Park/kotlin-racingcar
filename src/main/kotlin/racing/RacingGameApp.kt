@@ -19,6 +19,7 @@ class RacingGameApp {
         repeat(gameInfo.rounds) {
             carRecordView.nextRound()
         }
+        println("${carRecordView.getWinnerNames()}가 최종 우승했습니다.")
     }
 }
 

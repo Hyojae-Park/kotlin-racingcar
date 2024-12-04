@@ -1,20 +1,20 @@
 package racing.domain
 
 import racing.controller.GameController
+import racing.controller.RacingController
 
 /*
 자동차 정보 클래스
 - 자동차의 이름 등 특징을 갖는 클래스 : 하위 클래스로 구현
 - 사용자 입력(random)에 대해 다음 동작을 결정하는 함수 필요
  */
-class CarModel(inputName: String?, private val controller: GameController, initPosition: Int = 0) {
+class CarModel(inputName: String, private val controller: GameController = RacingController(), initPosition: Int = 0) {
     var currentPosition: Int = initPosition
         private set
 
     val name: String
 
     init {
-        requireNotNull(inputName) { "자동차 이름을 확인해 주세요" }
         require(inputName.length <= MAX_CAR_NAME_LENGTH) {
             "자동차 이름을 확인해 주세요"
         }

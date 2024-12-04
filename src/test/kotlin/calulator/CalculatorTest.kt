@@ -16,7 +16,7 @@ class CalculatorTest {
         "'1 / 1',1",
     )
     fun testCalculateCalculator(
-        input: String?,
+        input: String,
         expected: Double,
     ) {
         val calculator = Calculator()
@@ -26,8 +26,8 @@ class CalculatorTest {
 
     @ParameterizedTest
     @ValueSource(strings = ["=", "1 a 1", "1 -", "- 1", "1+1", "1+ 1", "1 1"])
-    fun testFailedCalculator(input: String?) {
+    fun testFailedCalculator(input: String) {
         val calculator = Calculator()
-        assertThatIllegalArgumentException().isThrownBy { input?.let { calculator.calculator(it) } }
+        assertThatIllegalArgumentException().isThrownBy { calculator.calculator(input) }
     }
 }

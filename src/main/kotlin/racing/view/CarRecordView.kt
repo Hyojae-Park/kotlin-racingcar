@@ -3,15 +3,16 @@ package racing.view
 import racing.controller.GameController
 import racing.controller.RacingController
 import racing.domain.CarModel
+import racing.domain.RaceResult
 
 class CarRecordView(private val gameInfo: GameInfo, private val controller: GameController = RacingController()) {
-    private val carList: List<CarModel>
+    private val cars: List<CarModel>
     private var currentRound: Int = 0
 
     init {
         val carNames = gameInfo.carNames
         val cars = carNames.split(DEFAULT_DELIMITER)
-        carList =
+        this.cars =
             List(cars.size) { index ->
                 CarModel(inputName = cars[index], controller = controller)
             }
@@ -24,7 +25,7 @@ class CarRecordView(private val gameInfo: GameInfo, private val controller: Game
     fun nextRound() {
         check(hasNextRound())
         currentRound++
-        for (car in carList) {
+        for (car in cars) {
             car.nextState()
         }
 
@@ -32,38 +33,15 @@ class CarRecordView(private val gameInfo: GameInfo, private val controller: Game
     }
 
     fun getWinners(): List<CarModel> {
-        var winPosition = 0
-        val winCars = arrayListOf<CarModel>()
-        for (car in carList) {
-            when {
-                car.currentPosition > winPosition -> {
-                    winPosition = car.currentPosition
-                    winCars.clear()
-                    winCars.add(car)
-                }
-                car.currentPosition == winPosition -> {
-                    winCars.add(car)
-                }
-            }
-        }
-
-        return winCars
+        return RaceResult(cars).getWinners()
     }
 
     fun getWinnerNames(): String {
-        val winners = getWinners()
-
-        return winners.joinToString(
-            separator = ",",
-            postfix = "가 최종 우승했습니다.",
-            transform = {
-                it.name
-            },
-        )
+        return RaceResult(cars).getCarNames()
     }
 
     private fun printRecord() {
-        for (car in carList) {
+        for (car in cars) {
             printCar(car)
         }
         println()

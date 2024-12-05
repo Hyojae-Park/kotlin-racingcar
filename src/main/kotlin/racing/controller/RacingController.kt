@@ -1,6 +1,6 @@
 package racing.controller
 
-interface GameController {
+fun interface GameController {
     fun generateRandomNumber(): Int
 }
 

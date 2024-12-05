@@ -3,13 +3,20 @@ package racing.view
 import racing.controller.GameController
 import racing.controller.RacingController
 import racing.domain.CarModel
+import racing.domain.RaceResult
 
 class CarRecordView(private val gameInfo: GameInfo, private val controller: GameController = RacingController()) {
-    private val carList =
-        List(gameInfo.cars) { index ->
-            CarModel(name = index.toString(), controller = controller)
-        }
+    private val cars: List<CarModel>
     private var currentRound: Int = 0
+
+    init {
+        val carNames = gameInfo.carNames
+        val cars = carNames.split(DEFAULT_DELIMITER)
+        this.cars =
+            List(cars.size) { index ->
+                CarModel(inputName = cars[index], controller = controller)
+            }
+    }
 
     fun hasNextRound(): Boolean {
         return (currentRound < gameInfo.rounds)
@@ -18,24 +25,37 @@ class CarRecordView(private val gameInfo: GameInfo, private val controller: Game
     fun nextRound() {
         check(hasNextRound())
         currentRound++
-        for (car in carList) {
+        for (car in cars) {
             car.nextState()
         }
 
         printRecord()
     }
 
+    fun getWinners(): List<CarModel> {
+        return RaceResult(cars).getWinners()
+    }
+
+    fun getWinnerNames(): String {
+        return RaceResult(cars).getCarNames()
+    }
+
     private fun printRecord() {
-        for (car in carList) {
-            printCar(car.currentPosition)
+        for (car in cars) {
+            printCar(car)
         }
         println()
     }
 
-    private fun printCar(position: Int) {
-        repeat(position) {
+    private fun printCar(car: CarModel) {
+        print("${car.name} : ")
+        repeat(car.currentPosition) {
             print("-")
         }
         println()
+    }
+
+    companion object {
+        private const val DEFAULT_DELIMITER = ","
     }
 }

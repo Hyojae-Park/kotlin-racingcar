@@ -1,11 +1,9 @@
 package racing
 
 import io.kotest.matchers.shouldBe
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.CsvSource
 import org.junit.jupiter.params.provider.ValueSource
-import racing.controller.GameController
-import racing.domain.CarModel
 import racing.view.CarRecordView
 import racing.view.GameInfo
 
@@ -14,34 +12,29 @@ class RacingGameAppTest {
     // CarModel : nextState
     // CarRecordView : nextRound
 
-    class TestController(val fixedNumber: Int) : GameController {
-        override fun generateRandomNumber(): Int {
-            return fixedNumber
-        }
-    }
-
     @ParameterizedTest
     @ValueSource(ints = [2, 3, 4, 5])
     fun `라운드 완료 테스트`(input: Int) {
-        val carRecordView = CarRecordView(GameInfo(1, input))
+        val carNames = "pobi,crong,honux"
+        val carRecordView = CarRecordView(GameInfo(carNames, input))
         repeat(input) {
             carRecordView.nextRound()
         }
         carRecordView.hasNextRound() shouldBe false
     }
 
-    @ParameterizedTest
-    @CsvSource(
-        "3, false",
-        "5, true",
-    )
-    fun `입력 값 이동 테스트`(
-        input: Int,
-        expectedMoved: Boolean,
-    ) {
-        val initPosition = 5
-        val carModel = CarModel(input.toString(), TestController(input), initPosition)
-        carModel.nextState()
-        (initPosition != carModel.currentPosition) shouldBe expectedMoved
+    @Test
+    fun `중복 우승자 테스트`() {
+        // controller 를 통해 여러 우승자를 만든다, position 0 / max
+        val carNames = "pobi,crong,honux"
+        val carNumber = 3
+        val rounds = 5
+        val doneMoveNumber = 3
+
+        val carRecordView = CarRecordView(GameInfo(carNames, rounds), { doneMoveNumber })
+        repeat(rounds) {
+            carRecordView.nextRound()
+        }
+        carRecordView.getWinners().size shouldBe carNumber
     }
 }

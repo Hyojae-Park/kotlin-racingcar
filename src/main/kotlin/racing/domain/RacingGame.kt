@@ -4,12 +4,18 @@ import racing.controller.GameUserInputInterface
 import racing.controller.MakeEntryCars
 import racing.controller.RandomNumberInput
 import racing.view.GameInfo
+import racing.view.PrintRaceDisplay
+import racing.view.RaceDisplayInterface
 
 /*
 car list 를 멤버로 가지며
 이동 로직(랜덤 숫자로 이동) 에 대한 처리를 함
  */
-class RacingGame(private val gameInfo: GameInfo, private val controller: GameUserInputInterface = RandomNumberInput()) {
+class RacingGame(
+    private val gameInfo: GameInfo,
+    controller: GameUserInputInterface = RandomNumberInput(),
+    private val displayInterface: RaceDisplayInterface = PrintRaceDisplay(),
+) {
     private val cars = MakeEntryCars(gameInfo.carNames, controller).makeEntry()
     private var currentRound: Int = 0
     private val winners: RaceResult by lazy {
@@ -47,5 +53,13 @@ class RacingGame(private val gameInfo: GameInfo, private val controller: GameUse
     fun getWinnerNames(): String {
         check(hasNextRound().not()) { "아직 게임 중이에요." }
         return winners.getCarNames()
+    }
+
+    fun startGame() {
+        repeat(gameInfo.rounds) {
+            nextRound()
+            displayInterface.displayRacing(cars)
+        }
+        displayInterface.displayWinners(winners)
     }
 }

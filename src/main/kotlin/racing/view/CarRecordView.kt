@@ -1,11 +1,11 @@
 package racing.view
 
-import racing.controller.RacingController
+import racing.controller.RandomNumberInput
 import racing.domain.CarModel
 import racing.domain.RacingGame
 
 class CarRecordView(gameInfo: GameInfo) {
-    private val racingGame = RacingGame(gameInfo, RacingController())
+    private val racingGame = RacingGame(gameInfo, RandomNumberInput())
 
     fun nextRound() {
         racingGame.nextRound()

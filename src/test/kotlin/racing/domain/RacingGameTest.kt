@@ -1,6 +1,7 @@
 package racing.domain
 
 import io.kotest.matchers.shouldBe
+import org.assertj.core.api.Assertions.assertThatIllegalStateException
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
@@ -13,6 +14,8 @@ class RacingGameTest {
 //  [x] hasNextRound/nextRound -> 라운드 완료 테스트
 //  [x] getWinners -> 우승자 테스트 (복수 가능)
 //  [x] getWinnerNames -> 우승자 이름 테스트(복수 가능)
+//  [x] getWinner -> 게임 중 테스트 (우승자 확인으로)
+
     @ParameterizedTest
     @CsvSource(
         "'pobi,crong,honux', 3",
@@ -82,5 +85,16 @@ class RacingGameTest {
             racingGame.nextRound()
         }
         racingGame.getWinnerNames() shouldBe carNames
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = [5, 3])
+    fun `게임 중 테스트`(input: Int) {
+        val carNames = "pobi,crong,honux"
+        val racingGame = RacingGame(GameInfo(carNames, input))
+        racingGame.nextRound()
+        racingGame.nextRound()
+
+        assertThatIllegalStateException().isThrownBy { racingGame.getWinners() }
     }
 }

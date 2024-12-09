@@ -1,24 +1,19 @@
 package racing.domain
 
-import racing.controller.GameController
-import racing.controller.RacingController
+import racing.controller.GameUserInputInterface
+import racing.controller.MakeEntryCars
+import racing.controller.RandomNumberInput
 import racing.view.GameInfo
 
 /*
 car list 를 멤버로 가지며
 이동 로직(랜덤 숫자로 이동) 에 대한 처리를 함
  */
-class RacingGame(private val gameInfo: GameInfo, private val controller: GameController = RacingController()) {
-    private val cars: List<CarModel>
+class RacingGame(private val gameInfo: GameInfo, private val controller: GameUserInputInterface = RandomNumberInput()) {
+    private val cars = MakeEntryCars(gameInfo.carNames, controller).makeEntry()
     private var currentRound: Int = 0
-
-    init {
-        val carNames = gameInfo.carNames
-        val cars = carNames.split(DEFAULT_DELIMITER)
-        this.cars =
-            List(cars.size) { index ->
-                CarModel(inputName = cars[index], controller = controller)
-            }
+    private val winners: RaceResult by lazy {
+        RaceResult(cars)
     }
 
     fun getCarCount(): Int {
@@ -39,17 +34,18 @@ class RacingGame(private val gameInfo: GameInfo, private val controller: GameCon
         for (car in cars) {
             car.nextState()
         }
+
+        if (hasNextRound().not()) {
+        }
     }
 
     fun getWinners(): List<CarModel> {
-        return RaceResult(cars).getWinners()
+        check(hasNextRound().not()) { "아직 게임 중이에요." }
+        return winners.getWinners()
     }
 
     fun getWinnerNames(): String {
-        return RaceResult(cars).getCarNames()
-    }
-
-    companion object {
-        private const val DEFAULT_DELIMITER = ","
+        check(hasNextRound().not()) { "아직 게임 중이에요." }
+        return winners.getCarNames()
     }
 }
